@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+    <fragment android:name="com.leops.hashtalk.MessagesFragment"
+        android:id="@+id/messages_fragment"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        tools:layout="@layout/fragment_messages" />
+
+    <View android:background="#eeeeee"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:background="#fff">
+
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:layout_marginLeft="8dip"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/nickname"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:nextFocusRight="@+id/contentText"
+                android:hint="@string/name_placeholder"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:imeOptions="actionNext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.0"/>
+
+            <EditText
+                android:id="@+id/contentText"
+                android:textColor="@android:color/black"
+                android:autoText="true"
+                android:textSize="16sp"
+                android:capitalize="sentences"
+                android:nextFocusRight="@+id/sendButton"
+                android:hint="@string/msg_placeholder"
+                android:maxLines="3"
+                android:inputType="textShortMessage|textAutoCorrect|textCapSentences"
+                android:imeOptions="actionSend|flagNoEnterAction"
+                android:maxLength="1023"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/sendButton"
+            android:src="@drawable/ic_action_send_now"
+            style="?android:attr/borderlessButtonStyle"
+            android:drawablePadding="0dip"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="4dip"
+            android:contentDescription="@string/action_send"
+            android:nextFocusLeft="@+id/embedded_text_editor"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

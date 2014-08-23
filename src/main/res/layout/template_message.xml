@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:paddingRight="10dip"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:layout_height="wrap_content">
+
+    <android.widget.QuickContactBadge
+        android:id="@+id/profilePicture"
+        android:layout_marginTop="5dip"
+        style="?android:attr/quickContactBadgeStyleWindowLarge"
+        android:layout_marginLeft="5dip"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/author"
+        android:text="Author"
+        android:textStyle="bold"
+        android:clickable="true"
+        android:layout_alignTop="@+id/profilePicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:singleLine="true"
+        android:layout_marginTop="6dip"
+        android:layout_marginLeft="10dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:ellipsize="marquee"
+        android:layout_toRightOf="@id/profilePicture" />
+
+    <TextView
+        android:id="@+id/date"
+        android:text="Time"
+        android:background="@drawable/badge_bg"
+        android:layout_marginRight="5dip"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:singleLine="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignTop="@+id/author"
+        android:layout_alignParentEnd="true" />
+
+    <com.leops.hashtalk.LinkifyTextView
+        android:id="@+id/message"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam.
+        "
+        android:autoLink="all|web|phone|map|email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="10dip"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@+id/author"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignRight="@+id/date"
+        android:layout_alignLeft="@+id/author" />
+
+</RelativeLayout>

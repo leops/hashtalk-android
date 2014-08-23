@@ -1,0 +1,15 @@
+<resources>
+    <color name="green">#5cb85c</color>
+    <color name="green_dark">#005200</color>
+    <color name="green_light">#8FEB8F</color>
+    <style name="AppTheme"
+        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
+    </style>
+    <style name="MyActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/green</item>
+        <item name="background">@color/green</item>
+    </style>
+</resources>
