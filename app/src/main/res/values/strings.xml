@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HashTalk</string>
+    <string name="nickname">Nickname</string>
+    <string name="message">Message</string>
+    <string name="action_search">Search</string>
+    <string name="no_found">No result found.</string>
+</resources>
