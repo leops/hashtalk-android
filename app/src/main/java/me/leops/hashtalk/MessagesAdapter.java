@@ -1,7 +1,6 @@
 package me.leops.hashtalk;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,13 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessageHolder> implements Filterable {
-
     private static final String TAG = "MessagesAdapter";
 
     private List<Message> mModels;
     private List<Message> mFiltered;
     private Map<String, Message> mModelKeys;
-    private Map<String, Uri> mImgCache;
+    private Map<String, String> mImgCache;
     private CharSequence mFilterQuery;
     private RequestQueue mQueue;
     private Filter mFilter;

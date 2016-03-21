@@ -1,13 +1,13 @@
 package me.leops.hashtalk;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -15,7 +15,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,24 +25,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import fr.tkeunebr.gravatar.Gravatar;
 
 public class MessageHolder extends RecyclerView.ViewHolder {
-    private static final String TAG = "MessageHolder";
-    public static final Pattern hashtag = Pattern.compile("\\#(\\w+)");
-    public static final Pattern mention = Pattern.compile("\\@(\\w+)");
-
     private final Context mContext;
     private final TextView mAuthor;
     private final TextView mTime;
-    private final SimpleDraweeView mAvatar;
+    private final ImageView mAvatar;
     private final TextView mContent;
     private final RequestQueue mQueue;
-    private final Map<String, Uri> mCache;
+    private final Map<String, String> mCache;
 
-    public MessageHolder(View v, Context c, RequestQueue q, Map<String, Uri> cache) {
+    public MessageHolder(View v, Context c, RequestQueue q, Map<String, String> cache) {
         super(v);
 
         mCache = cache;
@@ -50,7 +45,7 @@ public class MessageHolder extends RecyclerView.ViewHolder {
         mContext = c;
         mAuthor = (TextView) v.findViewById(R.id.author);
         mTime = (TextView) v.findViewById(R.id.time);
-        mAvatar = (SimpleDraweeView) v.findViewById(R.id.avatar);
+        mAvatar = (ImageView) v.findViewById(R.id.avatar);
         mContent = (TextView) v.findViewById(R.id.content);
 
         mContent.setMovementMethod(LinkMovementMethod.getInstance());
@@ -59,7 +54,7 @@ public class MessageHolder extends RecyclerView.ViewHolder {
     public void setContent(String nContent) {
         SpannableString str = new SpannableString(nContent);
 
-        Matcher hm = hashtag.matcher(nContent);
+        Matcher hm = Message.RX_HASHTAG.matcher(nContent);
         while (hm.find()) {
             final String h = hm.group(1);
             str.setSpan(new ClickableSpan() {
@@ -70,7 +65,7 @@ public class MessageHolder extends RecyclerView.ViewHolder {
             }, hm.start(), hm.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
-        Matcher mm = mention.matcher(nContent);
+        Matcher mm = Message.RX_MENTION.matcher(nContent);
         while (mm.find()) {
             final String m = mm.group(1);
             str.setSpan(new ClickableSpan() {
@@ -84,50 +79,61 @@ public class MessageHolder extends RecyclerView.ViewHolder {
         mContent.setText(str);
     }
 
-    public void loadImg(final String author, String url, boolean cache) {
-        if(mCache.containsKey(author)) {
-            mAvatar.setImageURI(mCache.get(author));
-        } else {
-            Uri uri = Uri.parse(url);
-            mAvatar.setImageURI(uri);
-            if(cache) mCache.put(author, uri);
+    private void setAvatar(String author, String uri) {
+        if(mAuthor.getText().equals(author)) {
+            Glide.with(mContext)
+                .load(uri)
+                .fitCenter()
+                .placeholder(R.drawable.placeholder_icon)
+                .dontAnimate()
+                .into(mAvatar);
         }
-    }
-
-    public void loadImg(final String author, String url) {
-        loadImg(author, url, true);
     }
 
     public void setAuthor(final String nAuthor) {
         mAuthor.setText(nAuthor);
 
         if(mCache.containsKey(nAuthor)) {
-            loadImg(nAuthor, "");
+            setAvatar(nAuthor, mCache.get(nAuthor));
         } else {
-            final String url = Gravatar.init().with(nAuthor).size(75).defaultImage(Gravatar.DefaultImage.IDENTICON).size(Gravatar.MAX_IMAGE_SIZE_PIXEL).build();
+            final String url = Gravatar.init()
+                .with(nAuthor)
+                .size(75)
+                .defaultImage(Gravatar.DefaultImage.IDENTICON)
+                .size(Gravatar.MAX_IMAGE_SIZE_PIXEL)
+                .build();
             String profile = "http://en.gravatar.com/" + nAuthor + ".json";
 
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, profile, new Response.Listener<String>() {
+            mAvatar.setImageResource(R.drawable.placeholder_icon);
+
+            StringRequest request = new StringRequest(Request.Method.GET, profile, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     String addr = url;
                     try {
-                        addr = new JSONObject(response).getJSONArray("entry").getJSONObject(0).getJSONArray("photos").getJSONObject(0).getString("value");
-                        loadImg(nAuthor, addr);
+                        addr = new JSONObject(response)
+                                .getJSONArray("entry")
+                                .getJSONObject(0)
+                                .getJSONArray("photos")
+                                .getJSONObject(0)
+                                .getString("value");
+                        mCache.put(nAuthor, addr);
                     } catch (JSONException e) {
-                        loadImg(nAuthor, addr, false);
                         //Log.e(TAG, e.toString());
+                    } finally {
+                        setAvatar(nAuthor, addr);
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    loadImg(nAuthor, url);
                     //Log.e(TAG, error.toString());
+                    mCache.put(nAuthor, url);
+                    setAvatar(nAuthor, url);
                 }
             });
 
-            mQueue.add(stringRequest);
+            mQueue.add(request);
         }
     }
 

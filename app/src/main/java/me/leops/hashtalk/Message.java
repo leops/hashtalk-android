@@ -1,8 +1,13 @@
 package me.leops.hashtalk;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Message {
+    public static final Pattern RX_HASHTAG = Pattern.compile("\\#(\\w+)");
+    public static final Pattern RX_MENTION = Pattern.compile("\\@(\\w+)");
+
     private String author;
     private String content;
     private List<String> hashtag;
@@ -35,13 +40,18 @@ public class Message {
     }
 
     public boolean test(CharSequence query) {
-        if(author.contains(query))
-            return true;
+        Matcher mm = RX_MENTION.matcher(query);
+        while (mm.find()) {
+            if(!author.equals(mm.group(1)))
+                return false;
+        }
 
-        for (String h : hashtag)
-            if (h.contains(query))
-                return true;
+        Matcher hm = RX_HASHTAG.matcher(query);
+        while (hm.find()) {
+            if(!hashtag.contains(hm.group(1)))
+                return false;
+        }
 
-        return false;
+        return true;
     }
 }
