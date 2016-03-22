@@ -60,35 +60,37 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="104dp">
+            android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/nickname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="20"
-                    android:hint="@string/nickname"
-                    android:imeOptions="actionNext"
-                    android:inputType="text|textNoSuggestions"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_above="@+id/message"
+                    android:layout_marginTop="8dp"
                     android:layout_marginRight="72dp"
                     android:layout_marginEnd="72dp"
                     android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp" />
+                    android:layout_marginStart="8dp"
+                    android:maxLength="20"
+                    android:hint="@string/nickname"
+                    android:imeOptions="actionNext"
+                    android:inputType="text|textNoSuggestions" />
 
                 <AutoCompleteTextView
                     android:id="@+id/message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentBottom="false"
+                    android:layout_below="@+id/nickname"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginRight="72dp"
                     android:layout_marginEnd="72dp"
                     android:layout_marginLeft="8dp"
