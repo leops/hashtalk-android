@@ -1,7 +1,28 @@
 <resources>
     <string name="app_name">HashTalk</string>
-    <string name="nickname">Nickname</string>
+
+    <string name="activity_profile">Profile</string>
+    <string name="activity_login">Log In</string>
+
     <string name="message">Message</string>
     <string name="action_search">Search</string>
-    <string name="no_found">No result found.</string>
+    <string name="hashtag">Hashtag</string>
+    <string name="pick_account">Pick account</string>
+
+    <string name="info_no_found">No result found.</string>
+    <string name="info_empty">Enter a hashtag to begin</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_unknown">Unknown error</string>
+
+    <string name="account_logged">Logged in successfully</string>
+    <string name="account_registered">Account created successfully</string>
+
+    <string name="nickname">Nickname</string>
 </resources>
