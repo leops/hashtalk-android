@@ -1,10 +1,10 @@
 HashTalk for Android
 ===========================
 
-This is a repo (really ?) containing a (currently in beta) client application for HashTalk.
+This is a repo containing the source code for the Android HashTalk client application.
 
-Feel free to compile and test it !
+It's currently available in public beta on the [Play Store](https://play.google.com/apps/testing/me.leops.hashtalk).
 
 # Requirements
 The application uses the following (not included) libs:
-- Gravatar-android (v1.0)
+- [gravatar-android-1.0](https://github.com/tkeunebr/gravatar-android)
