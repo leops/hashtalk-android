@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import me.leops.hashtalk.R;
 import me.leops.hashtalk.activity.LoginActivity;
+import me.leops.hashtalk.activity.ProfileActivity;
 
 /**
  * Created by leops on 23/03/2016.
@@ -25,7 +26,12 @@ public class Authenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-        return null;
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+
+        Bundle result = new Bundle();
+        result.putParcelable(AccountManager.KEY_INTENT, intent);
+
+        return result;
     }
 
     @Override

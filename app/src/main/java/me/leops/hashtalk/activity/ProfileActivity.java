@@ -1,11 +1,11 @@
 package me.leops.hashtalk.activity;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,7 +22,7 @@ import com.firebase.client.ValueEventListener;
 
 import me.leops.hashtalk.R;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatAuthenticatorActivity {
     private static final String TAG = "ProfileActivity";
 
     @Override
@@ -38,11 +38,22 @@ public class ProfileActivity extends AppCompatActivity {
         Account account = intent.getParcelableExtra("account");
         String pass = intent.getStringExtra("password");
 
+        if(account == null || pass == null) {
+            Log.wtf(TAG, "No account received");
+            finish();
+            return;
+        }
+
+        Firebase.setAndroidContext(this);
         final Firebase fbRef = new Firebase("http://hashtalk.firebaseio.com/users");
         fbRef.authWithPassword(account.name, pass, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
                 final Firebase user = fbRef.child(authData.getUid());
+
+                Bundle res = new Bundle();
+                res.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
+                setAccountAuthenticatorResult(res);
 
                 final ImageView avatar = (ImageView) findViewById(R.id.avatar);
 

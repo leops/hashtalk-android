@@ -6,10 +6,8 @@ import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -32,7 +30,10 @@ import java.util.Map;
 import fr.tkeunebr.gravatar.Gravatar;
 import me.leops.hashtalk.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatAuthenticatorActivity {
+    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
+    private Bundle mResultBundle = null;
+
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -107,6 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             final AccountManager manager = AccountManager.get(LoginActivity.this);
             final Account account = new Account(email, "me.leops.hashtalk");
 
+            Firebase.setAndroidContext(this);
             final Firebase usersRef = new Firebase("http://hashtalk.firebaseio.com/users");
             usersRef.authWithPassword(email, password, new Firebase.AuthResultHandler() {
                 @Override
@@ -219,16 +221,12 @@ public class LoginActivity extends AppCompatActivity {
         if (manager.addAccountExplicitly(account, password, null)) {
             Toast.makeText(LoginActivity.this, getString(R.string.account_registered), Toast.LENGTH_SHORT).show();
 
-            Intent req = getIntent();
-            Intent res = new Intent();
-            res.putExtra(AccountManager.KEY_ACCOUNT_NAME, account.name);
-            res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-            res.putExtra(AccountManager.KEY_PASSWORD, password);
+            Bundle res = new Bundle();
+            res.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+            res.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+            res.putString(AccountManager.KEY_PASSWORD, password);
 
-            AccountAuthenticatorResponse response = req.getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-            response.onResult(res.getExtras());
-
-            setResult(RESULT_OK, res);
+            setAccountAuthenticatorResult(res);
             finish();
         } else {
             showError(getString(R.string.error_unknown));
