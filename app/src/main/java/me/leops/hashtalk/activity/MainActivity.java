@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.profile:
-                if(mAccount != null) {
+                if(mUser != null && mAccount != null) {
                     Intent intent = new Intent(this, ProfileActivity.class);
                     intent.putExtra("account", mAccount);
                     intent.putExtra("password", mManager.getPassword(mAccount));

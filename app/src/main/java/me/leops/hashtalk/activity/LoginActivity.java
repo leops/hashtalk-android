@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatAuthenticatorActivity {
                                     @Override
                                     public void onAuthenticated(AuthData authData) {
                                         Map<String, Object> uData = new HashMap<>();
-                                        uData.put("displayName", email);
+                                        uData.put("displayName", email.substring(0, email.lastIndexOf('@')));
                                         uData.put("avatar",
                                             Gravatar.init()
                                                 .with(email)

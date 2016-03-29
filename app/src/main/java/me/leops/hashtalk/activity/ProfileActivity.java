@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +26,11 @@ import me.leops.hashtalk.R;
 public class ProfileActivity extends AppCompatAuthenticatorActivity {
     private static final String TAG = "ProfileActivity";
 
+    private TextInputEditText nickname;
+
+    private Firebase user;
+    private String currentNickname;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +39,8 @@ public class ProfileActivity extends AppCompatAuthenticatorActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        nickname = (TextInputEditText) findViewById(R.id.nickname);
 
         Intent intent = getIntent();
         Account account = intent.getParcelableExtra("account");
@@ -49,7 +57,7 @@ public class ProfileActivity extends AppCompatAuthenticatorActivity {
         fbRef.authWithPassword(account.name, pass, new Firebase.AuthResultHandler() {
             @Override
             public void onAuthenticated(AuthData authData) {
-                final Firebase user = fbRef.child(authData.getUid());
+                user = fbRef.child(authData.getUid());
 
                 Bundle res = new Bundle();
                 res.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, true);
@@ -57,30 +65,18 @@ public class ProfileActivity extends AppCompatAuthenticatorActivity {
 
                 final ImageView avatar = (ImageView) findViewById(R.id.avatar);
 
-                final String[] nameStr = {null};
-                final TextInputEditText nickname = (TextInputEditText) findViewById(R.id.nickname);
-                if(nickname != null)
-                    nickname.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                        @Override
-                        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                            if(!nameStr[0].equals(v.getText())) {
-                                nameStr[0] = v.getText().toString();
-                                user.child("displayName").setValue(nameStr[0]);
-                            }
-
-                            return true;
-                        }
-                    });
-
                 user.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
+                            return;
+
                         if (nickname != null) {
-                            if(nameStr[0] == null)
+                            if(currentNickname == null)
                                 nickname.setEnabled(true);
 
-                            nameStr[0] = dataSnapshot.child("displayName").getValue(String.class);
-                            nickname.setText(nameStr[0]);
+                            currentNickname = dataSnapshot.child("displayName").getValue(String.class);
+                            nickname.setText(currentNickname);
                         }
 
                         if(avatar != null) {
@@ -110,7 +106,18 @@ public class ProfileActivity extends AppCompatAuthenticatorActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        String txt = nickname.getText().toString();
+        if(user != null && !currentNickname.equals(txt)) {
+            currentNickname = txt;
+            user.child("displayName").setValue(currentNickname);
+        }
+    }
+
     public void editProfilePic(View view) {
-        sendBroadcast(new Intent(Intent.ACTION_VIEW, Uri.parse("http://en.gravatar.com/")));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://en.gravatar.com/")));
     }
 }
